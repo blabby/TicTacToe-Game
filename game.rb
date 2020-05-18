@@ -52,11 +52,28 @@ class Board
     end
 
     def diagonal_win?(sym)
-        @board.each do |row|
-            @row.each do |col|
+        return true if left_to_right(sym) || right_to_left(sym)
+    end
 
+    def left_to_right(sym)
+        array = []
+
+        @board.each_with_index do |row, i1|
+            @row.each_with_index do |col, i2|
+                if i1 == i2 && @board[i1][i2] == sym
+                    array << sym
+                end
             end
         end
+            if array.length == @board.length
+                return true
+            end
+            false
+    end
+
+
+    def right_to_left(sym)
+        
     end
 
     def vertical_win?(sym)
