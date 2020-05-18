@@ -55,9 +55,22 @@ class Board
         return true if left_to_right(sym) || right_to_left(sym)
     end
 
-    def left_to_right(sym)
+    def left_to_right(sym, reversed_board = nil)
         array = []
 
+        if reversed_board
+            reversed_board.each_with_index do |row, i1|
+                @row.each_with_index do |col, i2|
+                    if i1 == i2 && reversed_board[i1][i2] == sym
+                        array << sym
+                    end
+                end
+            end
+                if array.length == @board.length
+                    return true
+                end
+                false
+        else
         @board.each_with_index do |row, i1|
             @row.each_with_index do |col, i2|
                 if i1 == i2 && @board[i1][i2] == sym
@@ -69,15 +82,25 @@ class Board
                 return true
             end
             false
+        end
     end
 
 
     def right_to_left(sym)
+        reversed_board = []
         
+        @board.each do |row|
+            reversed_board << row.reverse
+        end
+
+        left_to_right(sym, reversed_board)
     end
 
     def vertical_win?(sym)
-        
+        transposed_array = @board.transpose
+        @transposed_array.each do |array|
+            return true if array.all? {|el| el == sym}
+        end
     end
 
     def horizontal_win?(sym)
@@ -87,8 +110,11 @@ class Board
         false
     end
 
-    def legal_position?
-        #not out of bounds/not already selected
+    def legal_position?(pos)
+        @pos.each do |row, col|
+            return false if @board[row][col] != "_" || !@board[row][col]
+        end
+        false
     end
-
+    #keep giving opponent guess (while loop in run method) while legal position returns false
 end
