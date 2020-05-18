@@ -23,7 +23,7 @@ class Board
 
     def run
         puts "Welcome to TicTacToe"
-        until win? || lose?
+        until win?(sym) || lose?
             self.display
         end
         puts "GAME OVER!"
@@ -39,8 +39,8 @@ class Board
 
     end
 
-    def win?
-        return true if diagonal_win? || vertical_win? || horizontal_win?
+    def win?(sym)
+        return true if diagonal_win?(sym) || vertical_win?(sym) || horizontal_win?(sym)
         false
     end
 
@@ -51,16 +51,23 @@ class Board
         false
     end
 
-    def diagonal_win?
+    def diagonal_win?(sym)
+        @board.each do |row|
+            @row.each do |col|
 
+            end
+        end
     end
 
-    def vertical_win?
-
+    def vertical_win?(sym)
+        
     end
 
-    def horizontal_win?
-
+    def horizontal_win?(sym)
+        @board.each do |row|
+            return true if row.all? {|el| el == sym}
+        end
+        false
     end
 
     def legal_position?
