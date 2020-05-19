@@ -166,4 +166,15 @@ class Board
     end
 end
 
-game = Board.new
+Board.new
+
+continue = true
+while continue
+puts "Play again? (Y/N)"
+answer = gets.chomp.upcase
+if answer == "Y"
+    Board.new
+else
+    continue = false
+end
+end
