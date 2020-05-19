@@ -1,38 +1,56 @@
     require_relative "player.rb"
+    require_relative "computer.rb"
+
 class Board
-    #Add players and computers
-    #Method to switch between players
-    #If someone wins should show their symbol/name
     attr_reader :size, :board, :sym, :players
     def initialize
-        puts "Enter game size:"
+        puts "Enter game size: (Ex: 3 would give a 3x3 grid)"
         @size = gets.chomp.to_i
         @board = Array.new(@size) {Array.new(@size, "_")}
-        #will get rid of this sym gets after
-        # puts "Enter your symbol"
-        # @sym = gets.chomp.to_sym
         puts "How many computer players?"
         @computer = gets.chomp.to_i
         puts "How many human players?"
         @human  = gets.chomp.to_i
         @players = []
-        add_human_players(@human)
+        self.add_human_players(@human)
     end
 
     def run
         puts "Welcome to TicTacToe!"
-        until win?(@sym) || lose?
+        until lose?
             self.display
+            puts "It is #{self.current_player.name}'s turn"
+            if self.current_player.ai == false
             puts "Enter position. (EX: 0 0 for position 1 on board)"
             pos = gets.chomp.split(" ").map(&:to_i)
             while !legal_position?(pos)
                 puts "Invalid position, please try again. (EX: 0 0 for position 1 on board)"
                 pos = gets.chomp.split(" ").map(&:to_i)
             end
+        else
+            pos = self.computer_pick
+            while !legal_position?(pos)
+                pos = self.computer_pick
+            end
+        end
             self.placement(pos)
+            break if win?(self.current_player.sym)
+            self.switch_players
         end
         self.display
+        if win?(self.current_player.sym)
+        puts "#{self.current_player.name} WINS!!!!!!!"
+        else
+            puts "NO ONE WINS!"
+        end
         puts "GAME OVER!"
+    end
+
+    def computer_pick
+        guess_array = []
+        possible_pos = (0...@board.length).to_a
+        2.times {guess_array << possible_pos.sample}
+        guess_array
     end
 
     def add_human_players(n)
@@ -43,24 +61,31 @@ class Board
             symbol = gets.chomp.to_sym
             players << Player.new(name, symbol)
         end
+        self.add_computer_players(@computer)
     end
 
-    def add_computer_players
+    def add_computer_players(n)
         (1..n).each do |player|
-            puts "Enter player #{player}'s' name"
+            puts "Enter computer #{player}'s' name"
             name = gets.chomp
-            puts "Enter player #{player}'s symbol"
+            puts "Enter computer #{player}'s symbol"
             symbol = gets.chomp.to_sym
             players << Computer.new(name, symbol)
         end
+        self.run
     end
 
-    def switch
-        #switch players
+    def current_player
+        @players.first
+    end
+
+    def switch_players
+        hold = @players.pop
+        @players.unshift(hold)
     end
 
     def placement(pos)
-        @board[pos[0]][pos[1]] = @sym
+        @board[pos[0]][pos[1]] = self.current_player.sym
     end
 
     def display
@@ -71,19 +96,17 @@ class Board
 
     def win?(sym)
          if diagonal_win?(sym) || vertical_win?(sym) || horizontal_win?(sym)
-            puts "YOU WIN!!!!!"
         return true
          end
         false
     end
 
     def lose?
+        counter = []
         @board.each do |array|
-             if array.none? {|el| el == "_"}
-            puts "YOU LOSE!!!!!!!"
-            return true
+            counter += array
         end
-        end
+        return true if counter.none? {|el| el == "_"}
         false
     end
 
@@ -144,4 +167,3 @@ class Board
 end
 
 game = Board.new
-p game.players
