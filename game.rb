@@ -1,11 +1,22 @@
+    require_relative "player.rb"
 class Board
-    attr_reader :size, :board, :sym
+    #Add players and computers
+    #Method to switch between players
+    #If someone wins should show their symbol/name
+    attr_reader :size, :board, :sym, :players
     def initialize
         puts "Enter game size:"
         @size = gets.chomp.to_i
         @board = Array.new(@size) {Array.new(@size, "_")}
-        puts "Enter your symbol"
-        @sym = gets.chomp.to_sym
+        #will get rid of this sym gets after
+        # puts "Enter your symbol"
+        # @sym = gets.chomp.to_sym
+        puts "How many computer players?"
+        @computer = gets.chomp.to_i
+        puts "How many human players?"
+        @human  = gets.chomp.to_i
+        @players = []
+        add_human_players(@human)
     end
 
     def run
@@ -22,6 +33,30 @@ class Board
         end
         self.display
         puts "GAME OVER!"
+    end
+
+    def add_human_players(n)
+        (1..n).each do |player|
+            puts "Enter player #{player}'s' name"
+            name = gets.chomp
+            puts "Enter player #{player}'s symbol"
+            symbol = gets.chomp.to_sym
+            players << Player.new(name, symbol)
+        end
+    end
+
+    def add_computer_players
+        (1..n).each do |player|
+            puts "Enter player #{player}'s' name"
+            name = gets.chomp
+            puts "Enter player #{player}'s symbol"
+            symbol = gets.chomp.to_sym
+            players << Computer.new(name, symbol)
+        end
+    end
+
+    def switch
+        #switch players
     end
 
     def placement(pos)
@@ -108,4 +143,5 @@ class Board
     end
 end
 
-Board.new.run
+game = Board.new
+p game.players
