@@ -166,9 +166,10 @@ class Board
     end
 end
 
-Board.new
+if __FILE__== $PROGRAM_NAME
+    Board.new
 
-continue = true
+    continue = true
 while continue
 puts "Play again? (Y/N)"
 answer = gets.chomp.upcase
@@ -178,3 +179,7 @@ else
     continue = false
 end
 end
+end
+
+
+
